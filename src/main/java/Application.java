@@ -8,20 +8,21 @@ import java.util.List;
 public class Application {
 
     public static int threadCount = 5;
-    private static final String imagesFolder = "M:\\Documents\\OSU\\Mgr\\2 LS\\VVPAP\\ImageProcessing\\src\\main\\resources\\input";
-    private static final String outputFolder = "M:\\Documents\\OSU\\Mgr\\2 LS\\VVPAP\\ImageProcessing\\src\\main\\resources\\output";
+    // IMPORTANT! SET CORRECT PATH TO PROJECT FILE (INCLUDED).
+    private static final String pathToProject = "C:\\Users\\krizomic\\Study\\ImageProcessing";
+    private static final String imagesFolder = pathToProject + "\\src\\main\\resources\\input";
+    private static final String outputFolder = pathToProject + "\\src\\main\\resources\\output";
     private static long totalTimeParallel = 0;
     private static long totalTimeSerial = 0;
     private static Counter counter = new Counter();
     private static PrintBuffer printBuffer = new PrintBuffer(threadCount);
-    private static final Filter.FilterEnum filter = Filter.FilterEnum.CONTRAST;
+    // SET FILTER TO BE APPLIED ON EVERY IMAGE
+    private static final Filter.FilterEnum filter = Filter.FilterEnum.BRIGHTER_SHADES_OF_GREY;
 
     public static void main(String[] args) throws InterruptedException {
-        initInfo();
+        printInitInfo();
 
-        clearFolder(outputFolder);
-
-        // parallelProcessing();
+        prepareOutputFolder(outputFolder);
 
         runBothProcessings();
     }
@@ -29,7 +30,7 @@ public class Application {
     private static void runBothProcessings() throws InterruptedException {
         parallelProcessing();
 
-        clearFolder(outputFolder);
+        prepareOutputFolder(outputFolder);
 
         counter.resetCounter();
 
@@ -118,7 +119,12 @@ public class Application {
         return folder.listFiles();
     }
 
-    private static void clearFolder(String folderPath) {
+    private static void prepareOutputFolder(String folderPath) {
+        File folder = new File(folderPath);
+        if (!folder.exists()) {
+            folder.mkdir();
+            return;
+        }
         File[] files = getFiles(folderPath);
         for (File file : files) {
             file.delete();
@@ -141,7 +147,7 @@ public class Application {
         if (totalTimeSerial < totalTimeParallel) System.out.println("Serial processing was faster " + diff + ".");
     }
 
-    private static void initInfo() {
+    private static void printInitInfo() {
         System.out.println("Image count: " + getFiles(imagesFolder).length);
         System.out.println("Thread count: " + threadCount);
         System.out.println();

@@ -3,6 +3,12 @@
  */
 public class WhileProcessingThread extends Thread {
 
+    /*
+    * This is a thread to use interrupt() on.
+    * This thread keeps printing while there are images being processed by other threads.
+    * When images are finished processing, this thread is interrupted.
+    * */
+
     @Override
     public void run() {
         while (this.isInterrupted() == false) {
